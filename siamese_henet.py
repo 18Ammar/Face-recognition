@@ -29,9 +29,9 @@ class HEBlock(nn.Module):
         return x * mask
 
 # %%
-class HENetEmbed(nn.Module):
+class HENetFaceEmbed(nn.Module):
     def __init__(self, feature_dim=256, beta=0.5):
-        super(HENetEmbed, self).__init__()
+        super(HENetFaceEmbed, self).__init__()
         base = resnet18(pretrained=True)
         base.conv1 = nn.Conv2d(1, 64, kernel_size=7, stride=2, padding=3, bias=False)
 
@@ -57,14 +57,14 @@ class HENetEmbed(nn.Module):
         x = self.fc(x)
         return self.dropout(x)
 
-# %%
-class SiameseFontDataset(Dataset):
-    def __init__(self, root_dir, transform=None, max_fonts=100):
+
+class SiameseFaceDataset(Dataset):
+    def __init__(self, root_dir, transform=None, max_classes=100):
         self.root_dir = root_dir
         self.transform = transform
 
         all_classes = os.listdir(root_dir)
-        self.classes = random.sample(all_classes, min(max_fonts, len(all_classes)))
+        self.classes = random.sample(all_classes, min(max_classes, len(all_classes)))
 
         self.class_to_images = {
             c: [os.path.join(root_dir, c, f) for f in os.listdir(os.path.join(root_dir, c))]
@@ -129,7 +129,7 @@ loader = DataLoader(dataset, batch_size=32, shuffle=True)
 
 # %%
 model = HENetEmbed().cuda()
-model.load_state_dict(torch.load("resnet18_henet_siamese_fonts_epoch5.pth"))
+model.load_state_dict(torch.load("henet_siamese_faces_epoch5.pth"))
 optimizer = torch.optim.Adam(model.parameters(), lr=0.0005)
 scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=10, gamma=0.5)
 
