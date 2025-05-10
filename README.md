@@ -72,6 +72,4 @@ evaluate(model, val_loader, threshold=0.6)
 - Final model saved as `resnet18_henet_siamese_faces_epoch5.pth`
 - Evaluation accuracy on validation/test set
 
-## License
 
-This project is released under the MIT License.
